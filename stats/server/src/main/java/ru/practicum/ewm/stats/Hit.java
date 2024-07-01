@@ -1,8 +1,10 @@
 package ru.practicum.ewm.stats;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.ReadOnlyProperty;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -11,7 +13,7 @@ import java.time.LocalDateTime;
 @Table(name = "endpoint_hits")
 @Getter
 @Setter
-public class EndpointHit {
+public class Hit {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @ReadOnlyProperty
@@ -27,5 +29,6 @@ public class EndpointHit {
     private String ip;
 
     @Column
+    @DateTimeFormat(pattern ="yyyy-MM-dd HH:mm:ss")
     private LocalDateTime timestamp;
 }

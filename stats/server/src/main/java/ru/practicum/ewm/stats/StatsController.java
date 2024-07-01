@@ -1,4 +1,4 @@
-package ru.practicum.explorewithme.stats;
+package ru.practicum.ewm.stats;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

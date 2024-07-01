@@ -1,11 +1,11 @@
-package ru.practicum.explorewithme.stats;
+package ru.practicum.ewm.stats;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.ewm.dto.EndpointHit;
 import ru.practicum.ewm.dto.ViewStats;
-import ru.practicum.explorewithme.stats.mapper.StatsMapper;
+import ru.practicum.ewm.stats.mapper.StatsMapper;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -18,7 +18,7 @@ public class StatsServiceImpl implements StatsService {
 
     @Override
     public void createHit(EndpointHit endpointHitDto) {
-        ru.practicum.ewm.dto.EndpointHit endpointHit = StatsMapper.mapToEndpointHit(endpointHitDto);
+        Hit endpointHit = StatsMapper.mapToEndpointHit(endpointHitDto);
         repository.save(endpointHit);
     }
 

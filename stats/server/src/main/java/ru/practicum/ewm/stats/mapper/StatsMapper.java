@@ -1,10 +1,11 @@
-package ru.practicum.explorewithme.stats.mapper;
+package ru.practicum.ewm.stats.mapper;
 
 import ru.practicum.ewm.dto.EndpointHit;
+import ru.practicum.ewm.stats.Hit;
 
 public class StatsMapper {
-    public static EndpointHit mapToEndpointHit(EndpointHit createEndpointHit) {
-        EndpointHit endpointHit = new EndpointHit();
+    public static Hit mapToEndpointHit(EndpointHit createEndpointHit) {
+        Hit endpointHit = new Hit();
         endpointHit.setIp(createEndpointHit.getIp());
         endpointHit.setUri(createEndpointHit.getUri());
         endpointHit.setTimestamp(createEndpointHit.getTimestamp());
@@ -13,7 +14,4 @@ public class StatsMapper {
         return endpointHit;
     }
 
-//    public static ViewStats mapToViewStats() {
-//        return new ViewStats();
-//    }
 }

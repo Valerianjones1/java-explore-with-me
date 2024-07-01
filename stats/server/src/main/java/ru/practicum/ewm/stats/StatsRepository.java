@@ -1,4 +1,4 @@
-package ru.practicum.explorewithme.stats;
+package ru.practicum.ewm.stats;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -11,9 +11,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
-public interface StatsRepository extends JpaRepository<EndpointHit, Long> {
+public interface StatsRepository extends JpaRepository<Hit, Long> {
     @Query(value = "SELECT new ru.practicum.ewm.dto.ViewStats(eh.app,eh.uri,count(eh.ip)) " +
-            "FROM EndpointHit AS eh " +
+            "FROM Hit AS eh " +
             "WHERE eh.timestamp > :start AND eh.timestamp < :end AND eh.uri IN (:uris) " +
             "GROUP BY eh.app, eh.ip, eh.uri " +
             "ORDER BY count(eh.ip) DESC")
@@ -21,7 +21,7 @@ public interface StatsRepository extends JpaRepository<EndpointHit, Long> {
                                      @Param("uris") List<String> uris);
 
     @Query(value = "SELECT new ru.practicum.ewm.dto.ViewStats(eh.app,eh.uri,count(distinct(eh.ip))) " +
-            "FROM EndpointHit AS eh " +
+            "FROM Hit AS eh " +
             "WHERE eh.timestamp > :start AND eh.timestamp < :end AND eh.uri IN (:uris)" +
             "GROUP BY eh.app, eh.ip, eh.uri " +
             "ORDER BY count(distinct(eh.ip)) DESC")
@@ -29,14 +29,14 @@ public interface StatsRepository extends JpaRepository<EndpointHit, Long> {
                                              @Param("uris") List<String> uris);
 
     @Query(value = "SELECT new ru.practicum.ewm.dto.ViewStats(eh.app,eh.uri,count(eh.ip)) " +
-            "FROM EndpointHit AS eh " +
+            "FROM Hit AS eh " +
             "WHERE eh.timestamp > :start AND eh.timestamp < :end " +
             "GROUP BY eh.app, eh.ip, eh.uri " +
             "ORDER BY count(eh.ip) DESC")
     List<ViewStats> findAllViewStats(@Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
 
     @Query(value = "SELECT new ru.practicum.ewm.dto.ViewStats(eh.app,eh.uri,count(distinct(eh.ip))) " +
-            "FROM EndpointHit AS eh " +
+            "FROM Hit AS eh " +
             "WHERE eh.timestamp > :start AND eh.timestamp < :end " +
             "GROUP BY eh.app, eh.ip, eh.uri " +
             "ORDER BY count(distinct(eh.ip)) DESC")
