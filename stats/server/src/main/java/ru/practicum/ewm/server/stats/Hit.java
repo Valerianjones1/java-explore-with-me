@@ -28,6 +28,6 @@ public class Hit {
     private String ip;
 
     @Column
-    @DateTimeFormat(pattern ="yyyy-MM-dd HH:mm:ss")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime timestamp;
 }
