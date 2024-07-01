@@ -1,4 +1,4 @@
-package ru.practicum.ewm.stats.config;
+package ru.practicum.ewm.server.config;
 
 import org.springframework.boot.actuate.autoconfigure.endpoint.web.CorsEndpointProperties;
 import org.springframework.boot.actuate.autoconfigure.endpoint.web.WebEndpointProperties;

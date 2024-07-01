@@ -31,7 +31,9 @@
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
     </dependencies>
+
     <build>
         <finalName>explore-with-me-stats</finalName>
     </build>
+
 </project>

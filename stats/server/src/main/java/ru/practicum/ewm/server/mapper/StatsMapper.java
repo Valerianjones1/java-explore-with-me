@@ -1,7 +1,7 @@
-package ru.practicum.ewm.stats.mapper;
+package ru.practicum.ewm.server.mapper;
 
 import ru.practicum.ewm.dto.EndpointHit;
-import ru.practicum.ewm.stats.Hit;
+import ru.practicum.ewm.server.stats.Hit;
 
 public class StatsMapper {
     public static Hit mapToEndpointHit(EndpointHit createEndpointHit) {

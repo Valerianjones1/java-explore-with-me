@@ -1,11 +1,11 @@
-package ru.practicum.ewm.stats;
+package ru.practicum.ewm.server.stats;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.ewm.dto.EndpointHit;
 import ru.practicum.ewm.dto.ViewStats;
-import ru.practicum.ewm.stats.mapper.StatsMapper;
+import ru.practicum.ewm.server.mapper.StatsMapper;
 
 import java.time.LocalDateTime;
 import java.util.List;
