@@ -1,4 +1,4 @@
-package ru.practicum.ewm.server.mapper;
+package ru.practicum.ewm.server.stats.mapper;
 
 import ru.practicum.ewm.dto.EndpointHit;
 import ru.practicum.ewm.server.stats.Hit;
