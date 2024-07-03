@@ -22,9 +22,11 @@ services:
       - POSTGRES_PASSWORD=root
 
   ewm-service:
-    image: amazoncorretto:11-alpine-jdk
+    build: service
     ports:
       - "8080:8080"
+    environment:
+      - STATS_SERVICE_URL=http://localhost:9090
 
   ewm-db:
     image: postgres:14-alpine

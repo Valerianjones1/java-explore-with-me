@@ -20,16 +20,15 @@ public class StatsController {
 
     @PostMapping("/hit")
     @ResponseStatus(code = HttpStatus.CREATED)
-    public String createHit(@Valid @RequestBody EndpointHit endpointHit) {
+    public void createHit(@Valid @RequestBody EndpointHit endpointHit) {
         log.info("Создается информация, что к эндпоинту {} был запрос", endpointHit);
         service.createHit(endpointHit);
-        return "Информация сохранена";
     }
 
     @GetMapping("/stats")
     @ResponseStatus(code = HttpStatus.OK)
     public List<ViewStats> getStats(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime start,
-                                    @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")  LocalDateTime end,
+                                    @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime end,
                                     @RequestParam(required = false, defaultValue = "") List<String> uris,
                                     @RequestParam(required = false, defaultValue = "false") Boolean unique) {
         log.info("Получаем статистику по посещениям с {} по {} по uris {}", start, end, uris);

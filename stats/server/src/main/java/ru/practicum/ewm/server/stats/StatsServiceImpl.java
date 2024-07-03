@@ -20,6 +20,7 @@ public class StatsServiceImpl implements StatsService {
     public void createHit(EndpointHit endpointHitDto) {
         Hit endpointHit = StatsMapper.mapToEndpointHit(endpointHitDto);
         repository.save(endpointHit);
+        log.info("Информация была успешно сохранена");
     }
 
     @Override
