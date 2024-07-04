@@ -1,4 +1,4 @@
-package ru.practicum.ewm.service.user.admin;
+package ru.practicum.ewm.service.user;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -14,7 +14,7 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @ReadOnlyProperty
-    private Integer id;
+    private Long id;
 
     @Column
     private String email;

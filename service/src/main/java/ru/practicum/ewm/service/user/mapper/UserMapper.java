@@ -1,8 +1,8 @@
-package ru.practicum.ewm.service.user.admin.mapper;
+package ru.practicum.ewm.service.user.mapper;
 
-import ru.practicum.ewm.service.user.admin.User;
-import ru.practicum.ewm.service.user.admin.dto.NewUserRequest;
-import ru.practicum.ewm.service.user.admin.dto.UserDto;
+import ru.practicum.ewm.service.user.User;
+import ru.practicum.ewm.service.user.dto.NewUserRequest;
+import ru.practicum.ewm.service.user.dto.UserDto;
 
 public class UserMapper {
 
@@ -17,7 +17,7 @@ public class UserMapper {
     public static UserDto mapToUserDto(User user) {
         UserDto userDto = new UserDto();
 
-        userDto.setId(user.getId());
+        userDto.setId(user.getId().intValue());
         userDto.setEmail(user.getEmail());
         userDto.setName(user.getName());
 

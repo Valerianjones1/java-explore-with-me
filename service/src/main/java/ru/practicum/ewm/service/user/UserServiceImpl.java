@@ -1,13 +1,13 @@
-package ru.practicum.ewm.service.user.admin;
+package ru.practicum.ewm.service.user;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.practicum.ewm.service.exception.NotFoundException;
-import ru.practicum.ewm.service.user.admin.dto.NewUserRequest;
-import ru.practicum.ewm.service.user.admin.dto.UserDto;
-import ru.practicum.ewm.service.user.admin.mapper.UserMapper;
+import ru.practicum.ewm.service.user.dto.NewUserRequest;
+import ru.practicum.ewm.service.user.dto.UserDto;
+import ru.practicum.ewm.service.user.mapper.UserMapper;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,7 +28,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserDto> getAll(List<Integer> ids, Pageable pageable) {
+    public List<UserDto> getAll(List<Long> ids, Pageable pageable) {
         if (ids.isEmpty()) {
             return repository.findAll(pageable)
                     .stream()
@@ -43,7 +43,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void remove(int userId) {
+    public void remove(long userId) {
         repository.findById(userId)
                 .orElseThrow(() -> new NotFoundException(
                         String.format("Пользователь с идентификатором %s не найден", userId)));
