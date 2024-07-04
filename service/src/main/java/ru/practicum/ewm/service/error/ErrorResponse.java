@@ -1,4 +1,4 @@
-package ru.practicum.ewm.server.error;
+package ru.practicum.ewm.service.error;
 
 import lombok.Data;
 

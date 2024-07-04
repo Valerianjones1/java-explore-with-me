@@ -1,4 +1,4 @@
-package ru.practicum.ewm.server.error;
+package ru.practicum.ewm.service.error;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -7,6 +7,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import ru.practicum.ewm.service.exception.NotFoundException;
 
 @RestControllerAdvice
 @Slf4j
@@ -16,6 +17,13 @@ public class ErrorHandler {
     public ErrorResponse handleValid(final MethodArgumentNotValidException e) {
         log.error("Ошибка с валидацией", e);
         return new ErrorResponse(e.getMessage(), "Ошибка с валидацией");
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handleNotFound(final NotFoundException e) {
+        log.info("Не найден");
+        return new ErrorResponse(e.getMessage(), "Пользователь или вещь не найдена");
     }
 
     @ExceptionHandler
