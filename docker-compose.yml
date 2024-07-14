@@ -7,7 +7,7 @@ services:
     depends_on:
       - stats-db
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://stats-db:5432/explorewithme
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://stats-db:5432/ewm-stats-db
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=root
 
@@ -16,7 +16,7 @@ services:
     ports:
       - "6541:5432"
     environment:
-      - POSTGRES_DB=explorewithme
+      - POSTGRES_DB=ewm-stats-db
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=root
 
@@ -24,8 +24,19 @@ services:
     build: service
     ports:
       - "8080:8080"
+    depends_on:
+      - ewm-db
     environment:
       - STATS_SERVICE_URL=http://localhost:9090
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://ewm-db:5432/ewm-service-db
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
 
   ewm-db:
     image: postgres:14-alpine
+    ports:
+      - "6542:5432"
+    environment:
+      - POSTGRES_DB=ewm-service-db
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
