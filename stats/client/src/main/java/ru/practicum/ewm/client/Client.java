@@ -1,7 +1,7 @@
 package ru.practicum.ewm.client;
 
-import ru.practicum.ewm.dto.EndpointHit;
-import ru.practicum.ewm.dto.ViewStats;
+import ru.practicum.ewm.dto.stats.EndpointHit;
+import ru.practicum.ewm.dto.stats.ViewStats;
 
 import java.time.LocalDateTime;
 import java.util.List;
