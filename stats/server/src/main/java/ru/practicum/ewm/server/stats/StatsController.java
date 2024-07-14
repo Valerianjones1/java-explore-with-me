@@ -5,8 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.ewm.dto.EndpointHit;
-import ru.practicum.ewm.dto.ViewStats;
+import ru.practicum.ewm.dto.stats.EndpointHit;
+import ru.practicum.ewm.dto.stats.ViewStats;
+import ru.practicum.ewm.server.exception.DateValidationException;
 
 import javax.validation.Valid;
 import java.time.LocalDateTime;
@@ -32,6 +33,14 @@ public class StatsController {
                                     @RequestParam(required = false, defaultValue = "") List<String> uris,
                                     @RequestParam(required = false, defaultValue = "false") Boolean unique) {
         log.info("Получаем статистику по посещениям с {} по {} по uris {}", start, end, uris);
+        validateDate(start, end);
         return service.getAllStats(start, end, uris, unique);
+    }
+
+    private void validateDate(LocalDateTime start, LocalDateTime end) {
+        if ((start != null && end != null) &&
+                (start.isAfter(end) || end.isBefore(start))) {
+            throw new DateValidationException("Ошибка с валидацией данных даты и времени");
+        }
     }
 }
