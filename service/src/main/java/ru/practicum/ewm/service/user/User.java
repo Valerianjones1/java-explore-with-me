@@ -16,7 +16,7 @@ public class User {
     @ReadOnlyProperty
     private Long id;
 
-    @Column
+    @Column(unique = true)
     private String email;
 
     @Column

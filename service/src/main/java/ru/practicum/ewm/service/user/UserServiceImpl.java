@@ -4,9 +4,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import ru.practicum.ewm.dto.user.NewUserRequest;
+import ru.practicum.ewm.dto.user.UserDto;
 import ru.practicum.ewm.service.exception.NotFoundException;
-import ru.practicum.ewm.service.user.dto.NewUserRequest;
-import ru.practicum.ewm.service.user.dto.UserDto;
 import ru.practicum.ewm.service.user.mapper.UserMapper;
 
 import java.util.List;
