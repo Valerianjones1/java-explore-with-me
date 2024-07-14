@@ -2,9 +2,8 @@ package ru.practicum.ewm.service.event;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.data.annotation.ReadOnlyProperty;
+import ru.practicum.ewm.dto.event.EventState;
 import ru.practicum.ewm.service.category.Category;
-import ru.practicum.ewm.service.event.dto.EventState;
 import ru.practicum.ewm.service.location.Location;
 import ru.practicum.ewm.service.user.User;
 
@@ -15,10 +14,9 @@ import java.time.LocalDateTime;
 @Table(name = "events")
 @Getter
 @Setter
-public class Eventtest {
+public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @ReadOnlyProperty
     private Long id;
 
     @Column
@@ -31,15 +29,15 @@ public class Eventtest {
     @Column
     private String description;
 
-    @Column
+    @Column(name = "event_date")
     private LocalDateTime eventDate;
 
     @ManyToOne
-    @JoinColumn(name = "location_id", nullable = false)
+    @JoinColumn(name = "location_id")
     private Location location;
 
     @ManyToOne
-    @JoinColumn(name = "initiator_id", nullable = false)
+    @JoinColumn(name = "initiator_id")
     private User initiator;
 
     @Column(name = "is_paid")
@@ -47,9 +45,9 @@ public class Eventtest {
 
     @Column
     @Enumerated(EnumType.STRING)
-    private EventState state;
+    private EventState state = EventState.PENDING;
 
-    @Column
+    @Column(name = "participant_limit")
     private Integer participantLimit;
 
     @Column
@@ -58,4 +56,11 @@ public class Eventtest {
     @Column
     private String title;
 
+    private Integer views = 0;
+
+    @Column(name = "date_create")
+    private LocalDateTime createdOn = LocalDateTime.now();
+
+    @Column(name = "confirmed_requests")
+    private Integer confirmedRequests = 0;
 }
