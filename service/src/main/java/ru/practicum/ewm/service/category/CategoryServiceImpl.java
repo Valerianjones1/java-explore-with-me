@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import ru.practicum.ewm.service.category.dto.CategoryDto;
-import ru.practicum.ewm.service.category.dto.NewCategoryDto;
+import ru.practicum.ewm.dto.category.CategoryDto;
+import ru.practicum.ewm.dto.category.NewCategoryDto;
 import ru.practicum.ewm.service.category.mapper.CategoryMapper;
 import ru.practicum.ewm.service.exception.NotFoundException;
 
@@ -38,7 +38,7 @@ public class CategoryServiceImpl implements CategoryService {
 
         Category updatedCategory = fillCategory(newCategory, oldCategory);
 
-        return CategoryMapper.mapToCategoryDto(updatedCategory);
+        return CategoryMapper.mapToCategoryDto(repository.save(updatedCategory));
     }
 
     @Override

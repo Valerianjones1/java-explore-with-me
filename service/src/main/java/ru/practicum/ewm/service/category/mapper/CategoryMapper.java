@@ -1,8 +1,8 @@
 package ru.practicum.ewm.service.category.mapper;
 
 import ru.practicum.ewm.service.category.Category;
-import ru.practicum.ewm.service.category.dto.CategoryDto;
-import ru.practicum.ewm.service.category.dto.NewCategoryDto;
+import ru.practicum.ewm.dto.category.CategoryDto;
+import ru.practicum.ewm.dto.category.NewCategoryDto;
 
 public class CategoryMapper {
     public static Category mapToCategory(NewCategoryDto newCategoryDto) {

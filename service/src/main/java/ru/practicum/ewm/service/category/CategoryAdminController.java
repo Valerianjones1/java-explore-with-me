@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.ewm.service.category.dto.CategoryDto;
-import ru.practicum.ewm.service.category.dto.NewCategoryDto;
+import ru.practicum.ewm.dto.category.CategoryDto;
+import ru.practicum.ewm.dto.category.NewCategoryDto;
 
 import javax.validation.Valid;
 
@@ -19,6 +19,7 @@ public class CategoryAdminController {
     @PostMapping
     @ResponseStatus(code = HttpStatus.CREATED)
     public CategoryDto createCategory(@Valid @RequestBody NewCategoryDto newCategoryDto) {
+        log.info("Создаем категорию {}", newCategoryDto);
         return service.create(newCategoryDto);
     }
 
@@ -26,12 +27,14 @@ public class CategoryAdminController {
     @ResponseStatus(code = HttpStatus.OK)
     public CategoryDto updateCategory(@PathVariable long catId,
                                       @Valid @RequestBody NewCategoryDto newCategoryDto) {
+        log.info("Обновляем категорию {}", newCategoryDto);
         return service.update(catId, newCategoryDto);
     }
 
     @DeleteMapping("/{catId}")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
     public void removeCategory(@PathVariable long catId) {
+        log.info("Удаляем категорию с идентификатором{}", catId);
         service.remove(catId);
     }
 }
