@@ -7,7 +7,6 @@ import ru.practicum.ewm.service.compilation.Compilation;
 import ru.practicum.ewm.service.event.Event;
 import ru.practicum.ewm.service.event.mapper.EventMapper;
 
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 

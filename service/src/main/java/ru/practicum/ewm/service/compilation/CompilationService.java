@@ -16,5 +16,6 @@ public interface CompilationService {
     CompilationDto update(UpdateCompilationRequest updateCompilationRequest, long compId);
 
     List<CompilationDto> getAll(Boolean pinned, Pageable pageable);
+
     CompilationDto getById(long compId);
 }
