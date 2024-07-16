@@ -86,9 +86,8 @@ public class EventPublicController {
 
     private int getViews(String uri) {
         List<ViewStats> viewStats = statsClient.sendStats(LocalDateTime.of(2000, 1, 1, 1, 1),
-                LocalDateTime.now(),
+                LocalDateTime.now().plusHours(1),
                 List.of(uri), true);
-
         return !viewStats.isEmpty() ? viewStats.get(0).getHits().intValue() : 0;
     }
 
