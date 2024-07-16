@@ -8,9 +8,11 @@ import org.springframework.data.domain.Sort;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.ewm.dto.event.EventFullDto;
-import ru.practicum.ewm.dto.event.EventShortDto;
+import ru.practicum.ewm.client.Client;
 import ru.practicum.ewm.dto.stats.EndpointHit;
+import ru.practicum.ewm.dto.stats.ViewStats;
+import ru.practicum.ewm.service.event.dto.EventFullDto;
+import ru.practicum.ewm.service.event.dto.EventShortDto;
 import ru.practicum.ewm.service.exception.DateValidationException;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,13 +27,16 @@ import java.util.List;
 @Slf4j
 public class EventPublicController {
     private final EventService service;
+
+    private final Client statsClient;
+
     private static final String APP = "ewm-main-service";
 
 
     @GetMapping
     @ResponseStatus(code = HttpStatus.OK)
     public List<EventShortDto> searchEvents(@RequestParam(required = false) String text,
-                                            @RequestParam(required = false) List<Long> categories,
+                                            @RequestParam(required = false, defaultValue = "") List<Long> categories,
                                             @RequestParam(required = false) Boolean paid,
                                             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeStart,
                                             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeEnd,
@@ -46,15 +51,28 @@ public class EventPublicController {
             throw new DateValidationException("Ошибка с валидацией данных даты и времени");
         }
         Pageable pageable = PageRequest.of(from / size, size, Sort.by(getSort(sort)).ascending());
-        return service.getEventsBySearch(text, categories, paid, getEndpointHit(httpServletRequest), rangeStart, rangeEnd, onlyAvailable, pageable);
+
+        List<EventShortDto> events = service.getEventsBySearch(text, categories, paid, rangeStart,
+                rangeEnd, onlyAvailable, pageable);
+
+        statsClient.sendHit(getEndpointHit(httpServletRequest));
+
+        return events;
     }
 
     @GetMapping("/{eventId}")
     @ResponseStatus(code = HttpStatus.OK)
     public EventFullDto getEventById(@PathVariable long eventId,
                                      HttpServletRequest httpServletRequest) {
-        log.info("Получаем событие с идентификатором{}", eventId);
-        return service.getEventById(eventId, getEndpointHit(httpServletRequest));
+        log.info("Получаем событие с идентификатором {}", eventId);
+
+        EventFullDto eventFullDto = service.getEventById(eventId);
+
+        statsClient.sendHit(getEndpointHit(httpServletRequest));
+
+        eventFullDto.setViews(getViews(httpServletRequest.getRequestURI()));
+
+        return eventFullDto;
     }
 
     private EndpointHit getEndpointHit(HttpServletRequest httpServletRequest) {
@@ -64,6 +82,14 @@ public class EventPublicController {
         endpointHit.setTimestamp(LocalDateTime.now());
         endpointHit.setApp(APP);
         return endpointHit;
+    }
+
+    private int getViews(String uri) {
+        List<ViewStats> viewStats = statsClient.sendStats(LocalDateTime.of(2000, 1, 1, 1, 1),
+                LocalDateTime.now(),
+                List.of(uri), true);
+
+        return !viewStats.isEmpty() ? viewStats.get(0).getHits().intValue() : 0;
     }
 
     private String getSort(String sort) {

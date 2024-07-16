@@ -4,8 +4,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import ru.practicum.ewm.dto.category.CategoryDto;
-import ru.practicum.ewm.dto.category.NewCategoryDto;
+import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.ewm.service.category.dto.CategoryDto;
+import ru.practicum.ewm.service.category.dto.NewCategoryDto;
 import ru.practicum.ewm.service.category.mapper.CategoryMapper;
 import ru.practicum.ewm.service.exception.NotFoundException;
 
@@ -19,6 +20,7 @@ public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository repository;
 
     @Override
+    @Transactional
     public CategoryDto create(NewCategoryDto newCategoryDto) {
         Category category = CategoryMapper.mapToCategory(newCategoryDto);
 
@@ -28,6 +30,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    @Transactional
     public CategoryDto update(long catId, NewCategoryDto newCategoryDto) {
         Category oldCategory = repository.findById(catId)
                 .orElseThrow(() -> new NotFoundException(
@@ -42,6 +45,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    @Transactional
     public void remove(long catId) {
         repository.findById(catId)
                 .orElseThrow(() -> new NotFoundException(
@@ -51,6 +55,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<CategoryDto> getAll(Pageable pageable) {
         return repository.findAll(pageable)
                 .stream()
@@ -59,6 +64,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public CategoryDto get(long catId) {
         Category category = repository.findById(catId)
                 .orElseThrow(() -> new NotFoundException(

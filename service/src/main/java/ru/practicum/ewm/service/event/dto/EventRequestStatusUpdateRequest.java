@@ -1,7 +1,7 @@
-package ru.practicum.ewm.dto.event;
+package ru.practicum.ewm.service.event.dto;
 
 import lombok.Data;
-import ru.practicum.ewm.dto.request.EventRequestStatus;
+import ru.practicum.ewm.service.request.dto.EventRequestStatus;
 
 import java.util.List;
 

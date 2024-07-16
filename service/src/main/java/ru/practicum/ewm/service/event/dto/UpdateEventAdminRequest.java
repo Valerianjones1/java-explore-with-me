@@ -1,22 +1,20 @@
-package ru.practicum.ewm.dto.event;
+package ru.practicum.ewm.service.event.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.format.annotation.DateTimeFormat;
-import ru.practicum.ewm.dto.location.LocationDto;
+import ru.practicum.ewm.service.location.dto.LocationDto;
 
 import javax.validation.constraints.FutureOrPresent;
-import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.time.LocalDateTime;
 
 @Data
-public class UpdateEventUserRequest {
+public class UpdateEventAdminRequest {
     @Length(min = 20, max = 2000)
     private String annotation;
 
-    @Positive
     private Integer category;
 
     @Length(min = 20, max = 7000)
@@ -36,7 +34,7 @@ public class UpdateEventUserRequest {
 
     private Boolean requestModeration;
 
-    private EventStateAction stateAction;
+    private String stateAction;
 
     @Length(min = 3, max = 120)
     private String title;

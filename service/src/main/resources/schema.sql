@@ -40,8 +40,6 @@ CREATE TABLE IF NOT EXISTS events
     initiator_id BIGINT,
     participant_limit BIGINT,
     compilation_id BIGINT,
-    views BIGINT,
-    confirmed_requests BIGINT,
     state VARCHAR(100),
     title  VARCHAR(120) NOT NULL,
     date_create TIMESTAMP WITHOUT TIME ZONE,

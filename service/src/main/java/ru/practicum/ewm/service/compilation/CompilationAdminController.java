@@ -4,9 +4,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.ewm.dto.compilation.CompilationDto;
-import ru.practicum.ewm.dto.compilation.NewCompilationDto;
-import ru.practicum.ewm.dto.compilation.UpdateCompilationRequest;
+import ru.practicum.ewm.service.compilation.dto.CompilationDto;
+import ru.practicum.ewm.service.compilation.dto.NewCompilationDto;
+import ru.practicum.ewm.service.compilation.dto.UpdateCompilationRequest;
 
 import javax.validation.Valid;
 
@@ -33,6 +33,7 @@ public class CompilationAdminController {
     @ResponseStatus(code = HttpStatus.OK)
     public CompilationDto updateCompilation(@Valid @RequestBody UpdateCompilationRequest updateCompilationRequest,
                                             @PathVariable long compId) {
-        return service.update(updateCompilationRequest, compId);
+        updateCompilationRequest.setCompId(compId);
+        return service.update(updateCompilationRequest);
     }
 }

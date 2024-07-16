@@ -1,4 +1,4 @@
-package ru.practicum.ewm.dto.request;
+package ru.practicum.ewm.service.request.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;

@@ -1,9 +1,9 @@
 package ru.practicum.ewm.service.request.mapper;
 
-import ru.practicum.ewm.dto.request.ParticipationRequestDto;
-import ru.practicum.ewm.dto.request.RequestStatus;
 import ru.practicum.ewm.service.event.Event;
 import ru.practicum.ewm.service.request.Request;
+import ru.practicum.ewm.service.request.dto.ParticipationRequestDto;
+import ru.practicum.ewm.service.request.dto.RequestStatus;
 import ru.practicum.ewm.service.user.User;
 
 import java.time.LocalDateTime;

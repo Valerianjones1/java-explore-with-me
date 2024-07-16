@@ -1,12 +1,12 @@
 package ru.practicum.ewm.service.event.mapper;
 
-import ru.practicum.ewm.dto.event.*;
-import ru.practicum.ewm.dto.request.ParticipationRequestDto;
 import ru.practicum.ewm.service.category.Category;
 import ru.practicum.ewm.service.category.mapper.CategoryMapper;
 import ru.practicum.ewm.service.event.Event;
+import ru.practicum.ewm.service.event.dto.*;
 import ru.practicum.ewm.service.location.Location;
 import ru.practicum.ewm.service.location.mapper.LocationMapper;
+import ru.practicum.ewm.service.request.dto.ParticipationRequestDto;
 import ru.practicum.ewm.service.user.User;
 import ru.practicum.ewm.service.user.mapper.UserMapper;
 
@@ -29,7 +29,6 @@ public class EventMapper {
         eventFullDto.setState(event.getState());
         eventFullDto.setParticipantLimit(event.getParticipantLimit());
         eventFullDto.setViews(event.getViews());
-        eventFullDto.setConfirmedRequests(event.getConfirmedRequests());
         eventFullDto.setId(event.getId().intValue());
         eventFullDto.setState(event.getState());
 
@@ -50,7 +49,6 @@ public class EventMapper {
         eventShortDto.setTitle(event.getTitle());
         eventShortDto.setId(event.getId().intValue());
         eventShortDto.setViews(event.getViews());
-        eventShortDto.setConfirmedRequests(event.getConfirmedRequests());
         return eventShortDto;
     }
 

@@ -1,4 +1,4 @@
-package ru.practicum.ewm.dto.compilation;
+package ru.practicum.ewm.service.compilation.dto;
 
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
@@ -13,4 +13,6 @@ public class UpdateCompilationRequest {
 
     @Length(min = 1, max = 50)
     private String title;
+
+    private Long compId;
 }

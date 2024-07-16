@@ -4,9 +4,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import ru.practicum.ewm.dto.user.NewUserRequest;
-import ru.practicum.ewm.dto.user.UserDto;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm.service.exception.NotFoundException;
+import ru.practicum.ewm.service.user.dto.NewUserRequest;
+import ru.practicum.ewm.service.user.dto.UserDto;
 import ru.practicum.ewm.service.user.mapper.UserMapper;
 
 import java.util.List;
@@ -19,6 +20,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository repository;
 
     @Override
+    @Transactional
     public UserDto create(NewUserRequest newUserRequest) {
         User user = UserMapper.mapToUser(newUserRequest);
 
@@ -28,6 +30,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<UserDto> getAll(List<Long> ids, Pageable pageable) {
         if (ids.isEmpty()) {
             return repository.findAll(pageable)
@@ -43,6 +46,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void remove(long userId) {
         repository.findById(userId)
                 .orElseThrow(() -> new NotFoundException(

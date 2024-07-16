@@ -5,8 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.ReadOnlyProperty;
 import org.springframework.format.annotation.DateTimeFormat;
-import ru.practicum.ewm.dto.request.RequestStatus;
 import ru.practicum.ewm.service.event.Event;
+import ru.practicum.ewm.service.request.dto.RequestStatus;
 import ru.practicum.ewm.service.user.User;
 
 import javax.persistence.*;
@@ -26,11 +26,11 @@ public class Request {
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime created;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "event_id", nullable = false)
     private Event event;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "requester_id", nullable = false)
     private User requester;
 

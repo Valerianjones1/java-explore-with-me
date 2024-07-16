@@ -4,7 +4,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import ru.practicum.ewm.dto.event.EventState;
+import ru.practicum.ewm.service.event.dto.EventState;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -12,6 +12,8 @@ import java.util.Optional;
 
 public interface EventRepository extends JpaRepository<Event, Long> {
     List<Event> findAllByInitiatorId(long userId, Pageable pageable);
+
+    Optional<Event> findByIdAndInitiatorId(long eventId, long userId);
 
     Optional<Event> findByIdAndStateEquals(long eventId, EventState state);
 
@@ -29,32 +31,16 @@ public interface EventRepository extends JpaRepository<Event, Long> {
                                                Pageable pageable);
 
     @Query(value = "SELECT * FROM events e " +
-            "WHERE (:categoryIds is null or e.category_id in :categoryIds) " +
-            "and (cast(:rangeStart as date) is null or e.event_date >= :rangeStart) " +
-            "and (cast(:rangeEnd as date) is null or e.event_date <= :rangeEnd) " +
-            "and e.confirmedRequests < e.participantLimit" +
-            "and e.participantLimit != 0 " +
-            "and (:paid is null or e.is_paid = :paid) " +
-            "and (:text is null or lower(e.annotation) LIKE %:text% " +
-            "or lower(e.description) LIKE %:text%)", nativeQuery = true)
-    List<Event> findAllBySearchParamsAvailable(@Param("text") String text,
-                                               @Param("categoryIds") List<Long> categoryIds,
-                                               @Param("paid") Boolean paid,
-                                               @Param("rangeStart") LocalDateTime rangeStart,
-                                               @Param("rangeEnd") LocalDateTime rangeEnd,
-                                               Pageable pageable);
-
-    @Query(value = "SELECT * FROM events e " +
-            "WHERE  (:categoryIds is null or e.category_id in :categoryIds) " +
+            "WHERE (:categories is null or e.category_id in :categories) " +
             "and (cast(:rangeStart as date) is null or e.event_date >= :rangeStart) " +
             "and (cast(:rangeEnd as date) is null or e.event_date <= :rangeEnd) " +
             "and (:paid is null or e.is_paid = :paid) " +
             "and (:text is null or lower(e.annotation) LIKE %:text% " +
             "or lower(e.description) LIKE %:text%)", nativeQuery = true)
     List<Event> findAllBySearchParams(@Param("text") String text,
-                                      @Param("categoryIds") List<Long> categoryIds,
                                       @Param("paid") Boolean paid,
                                       @Param("rangeStart") LocalDateTime rangeStart,
                                       @Param("rangeEnd") LocalDateTime rangeEnd,
+                                      @Param("categories") List<Long> categories,
                                       Pageable pageable);
 }

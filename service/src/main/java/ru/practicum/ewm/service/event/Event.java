@@ -2,8 +2,8 @@ package ru.practicum.ewm.service.event;
 
 import lombok.Getter;
 import lombok.Setter;
-import ru.practicum.ewm.dto.event.EventState;
 import ru.practicum.ewm.service.category.Category;
+import ru.practicum.ewm.service.event.dto.EventState;
 import ru.practicum.ewm.service.location.Location;
 import ru.practicum.ewm.service.user.User;
 
@@ -22,7 +22,7 @@ public class Event {
     @Column
     private String annotation;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
@@ -32,11 +32,11 @@ public class Event {
     @Column(name = "event_date")
     private LocalDateTime eventDate;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "location_id")
     private Location location;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "initiator_id")
     private User initiator;
 
@@ -56,11 +56,9 @@ public class Event {
     @Column
     private String title;
 
+    @Transient
     private Integer views = 0;
 
     @Column(name = "date_create")
     private LocalDateTime createdOn = LocalDateTime.now();
-
-    @Column(name = "confirmed_requests")
-    private Integer confirmedRequests = 0;
 }

@@ -1,9 +1,7 @@
 package ru.practicum.ewm.service.event;
 
 import org.springframework.data.domain.Pageable;
-import ru.practicum.ewm.dto.event.*;
-import ru.practicum.ewm.dto.request.ParticipationRequestDto;
-import ru.practicum.ewm.dto.stats.EndpointHit;
+import ru.practicum.ewm.service.event.dto.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -17,16 +15,11 @@ public interface EventService {
 
     EventFullDto updateByUserIdAndEventId(UpdateEventUserRequest requestDto, long userId, long eventId);
 
-    List<ParticipationRequestDto> getRequestsByUserIdAndEventId(long userId, long eventId);
-
-    EventRequestStatusUpdateResult updateRequestsStatus(EventRequestStatusUpdateRequest requestDto, long userId, long eventId);
-
     List<EventShortDto> getEventsBySearch(String text, List<Long> categoryIds, Boolean paid,
-                                          EndpointHit endpointHit,
                                           LocalDateTime rangeStart, LocalDateTime rangeEnd, Boolean onlyAvailable,
                                           Pageable pageable);
 
-    EventFullDto getEventById(long eventId, EndpointHit endpointHit);
+    EventFullDto getEventById(long eventId);
 
     List<EventFullDto> getEventsByParams(List<Long> users, List<String> states, List<Long> categories,
                                          LocalDateTime rangeStart, LocalDateTime rangeEnd, Pageable pageable);

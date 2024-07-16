@@ -1,4 +1,4 @@
-package ru.practicum.ewm.dto.location;
+package ru.practicum.ewm.service.location.dto;
 
 import lombok.Data;
 

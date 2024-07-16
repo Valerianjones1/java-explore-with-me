@@ -1,4 +1,4 @@
-package ru.practicum.ewm.dto.user;
+package ru.practicum.ewm.service.user.dto;
 
 import lombok.Data;
 

@@ -1,4 +1,4 @@
-package ru.practicum.ewm.dto.compilation;
+package ru.practicum.ewm.service.compilation.dto;
 
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;

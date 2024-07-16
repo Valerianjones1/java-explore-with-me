@@ -8,8 +8,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.ewm.dto.event.EventFullDto;
-import ru.practicum.ewm.dto.event.UpdateEventAdminRequest;
+import ru.practicum.ewm.service.event.dto.EventFullDto;
+import ru.practicum.ewm.service.event.dto.UpdateEventAdminRequest;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
