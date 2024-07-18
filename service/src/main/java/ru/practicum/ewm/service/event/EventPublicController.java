@@ -68,7 +68,7 @@ public class EventPublicController {
         EventFullDto eventFullDto = service.getEventById(eventId);
 
         statsClient.sendHit(getEndpointHit(httpServletRequest));
-        
+
         return service.getEventById(eventId);
     }
 
