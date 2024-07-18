@@ -18,7 +18,7 @@ public class Compilation {
     @ReadOnlyProperty
     private Long id;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany
     @JoinTable(name = "event_compilations", joinColumns = @JoinColumn(name = "compilation_id"),
             inverseJoinColumns = @JoinColumn(name = "event_id"))
     private Set<Event> events;

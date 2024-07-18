@@ -8,7 +8,7 @@ import ru.practicum.ewm.client.StatsClient;
 @Configuration
 public class Config {
     @Bean
-    public static StatsClient statsClient(@Value("${stats-service.url}") String statsServiceUrl) {
+    public StatsClient statsClient(@Value("${stats-service.url}") String statsServiceUrl) {
         return new StatsClient(statsServiceUrl);
     }
 }

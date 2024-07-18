@@ -10,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewm.client.Client;
 import ru.practicum.ewm.dto.stats.EndpointHit;
-import ru.practicum.ewm.dto.stats.ViewStats;
 import ru.practicum.ewm.service.event.dto.EventFullDto;
 import ru.practicum.ewm.service.event.dto.EventShortDto;
 import ru.practicum.ewm.service.exception.DateValidationException;
@@ -69,10 +68,8 @@ public class EventPublicController {
         EventFullDto eventFullDto = service.getEventById(eventId);
 
         statsClient.sendHit(getEndpointHit(httpServletRequest));
-
-        eventFullDto.setViews(getViews(httpServletRequest.getRequestURI()));
-
-        return eventFullDto;
+        
+        return service.getEventById(eventId);
     }
 
     private EndpointHit getEndpointHit(HttpServletRequest httpServletRequest) {
@@ -82,13 +79,6 @@ public class EventPublicController {
         endpointHit.setTimestamp(LocalDateTime.now());
         endpointHit.setApp(APP);
         return endpointHit;
-    }
-
-    private int getViews(String uri) {
-        List<ViewStats> viewStats = statsClient.sendStats(LocalDateTime.of(2000, 1, 1, 1, 1),
-                LocalDateTime.now().plusHours(1),
-                List.of(uri), true);
-        return !viewStats.isEmpty() ? viewStats.get(0).getHits().intValue() : 0;
     }
 
     private String getSort(String sort) {

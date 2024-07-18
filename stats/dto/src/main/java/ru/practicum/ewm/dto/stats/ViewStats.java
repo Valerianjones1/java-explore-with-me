@@ -12,5 +12,5 @@ public class ViewStats {
 
     private String uri;
 
-    private Long hits;
+    private Long hits = 0L;
 }

@@ -2,6 +2,7 @@ package ru.practicum.ewm.service.compilation;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,21 +28,26 @@ public class CompilationServiceImpl implements CompilationService {
     @Transactional
     public CompilationDto create(NewCompilationDto newCompilationDto) {
         Set<Event> compilationEvents = Collections.emptySet();
-        if (newCompilationDto.getEvents() != null && !newCompilationDto.getEvents().isEmpty()) {
-            Map<Long, Event> events = eventRepository.findAll()
+
+        List<Long> eventIds = newCompilationDto.getEvents();
+
+        if (eventIds != null && !eventIds.isEmpty()) {
+            Map<Long, Event> events = eventRepository.findAllByIdIn(eventIds)
                     .stream()
                     .collect(Collectors.toMap(Event::getId, event -> event));
 
-            compilationEvents = newCompilationDto.getEvents()
+            compilationEvents = eventIds
                     .stream()
-                    .map(eventId -> events.getOrDefault(eventId, null))
+                    .map(events::get)
                     .filter(Objects::nonNull)
                     .collect(Collectors.toSet());
+
+            if (compilationEvents.size() != eventIds.size()) {
+                throw new DataIntegrityViolationException("Ожидается, что полученные события должны совпадать");
+            }
         }
 
-
         Compilation compilation = CompilationMapper.mapToCompilation(newCompilationDto, compilationEvents);
-
 
         return CompilationMapper.mapToCompilationDto(compilationRepository.save(compilation));
     }
@@ -65,16 +71,23 @@ public class CompilationServiceImpl implements CompilationService {
                         String.format("Подборка с идентификатором %s не найдена", compId)));
 
         Set<Event> compilationEvents = foundCompilation.getEvents();
-        if (updateCompilationRequest.getEvents() != null && !updateCompilationRequest.getEvents().isEmpty()) {
-            Map<Long, Event> events = eventRepository.findAll()
+
+        List<Long> eventIds = updateCompilationRequest.getEvents();
+
+        if (eventIds != null && !eventIds.isEmpty()) {
+            Map<Long, Event> events = eventRepository.findAllByIdIn(eventIds)
                     .stream()
                     .collect(Collectors.toMap(Event::getId, event -> event));
 
-            compilationEvents = updateCompilationRequest.getEvents()
+            compilationEvents = eventIds
                     .stream()
-                    .map(eventId -> events.getOrDefault(eventId, null))
+                    .map(events::get)
                     .filter(Objects::nonNull)
                     .collect(Collectors.toSet());
+
+            if (compilationEvents.size() != eventIds.size()) {
+                throw new DataIntegrityViolationException("Ожидается, что полученные события должны совпадать");
+            }
         }
 
         Compilation newCompilation = CompilationMapper.mapToCompilation(updateCompilationRequest, compilationEvents);

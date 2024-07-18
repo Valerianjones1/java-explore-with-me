@@ -27,6 +27,7 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -72,7 +73,7 @@ public class EventServiceImpl implements EventService {
     @Override
     @Transactional(readOnly = true)
     public List<EventShortDto> getByUserId(long userId, Pageable pageable) {
-        List<Request> confirmedRequests = requestRepository.findAllByRequesterIdAndStatusEquals(userId, RequestStatus.CONFIRMED);
+        List<Request> confirmedRequests = requestRepository.findAllByStatusEquals(RequestStatus.CONFIRMED);
 
         Map<Long, Long> eventRequests = confirmedRequests
                 .stream()
@@ -80,19 +81,20 @@ public class EventServiceImpl implements EventService {
 
         List<Event> events = eventRepository.findAllByInitiatorId(userId, pageable);
 
-        List<String> eventIds = events.stream()
+        List<String> eventUris = events.stream()
                 .map(event -> "/events/" + event.getId())
                 .collect(Collectors.toList());
 
-        Map<Long, ViewStats> viewStats = getStats(eventIds);
+        Map<Long, ViewStats> viewStats = getStats(eventUris);
 
         return events.stream()
                 .map(event -> {
-                    EventShortDto eventShortDto = EventMapper.mapToEventShortDto(event);
-                    eventShortDto.setConfirmedRequests(eventRequests.get(event.getId()) != null
-                            ? eventRequests.get(event.getId()).intValue() : 0);
-                    eventShortDto.setViews(!viewStats.isEmpty() ? viewStats.get(event.getId()).getHits().intValue() : 0);
+                    int confirmedRequestsCount = eventRequests.getOrDefault(event.getId(), 0L).intValue();
+                    int views = viewStats.getOrDefault(event.getId(), new ViewStats()).getHits().intValue();
 
+                    EventShortDto eventShortDto = EventMapper.mapToEventShortDto(event);
+                    eventShortDto.setConfirmedRequests(confirmedRequestsCount);
+                    eventShortDto.setViews(views);
 
                     return eventShortDto;
                 })
@@ -102,8 +104,8 @@ public class EventServiceImpl implements EventService {
     @Override
     @Transactional(readOnly = true)
     public EventFullDto getByUserIdAndEventId(long userId, long eventId) {
-        List<Request> confirmedRequests = requestRepository.findAllByEventIdAndRequesterIdAndStatusEquals(eventId,
-                userId, RequestStatus.CONFIRMED);
+        List<Request> confirmedRequests = requestRepository.findAllByEventIdAndStatusEquals(eventId,
+                RequestStatus.CONFIRMED);
 
         Map<Long, Long> eventRequests = confirmedRequests
                 .stream()
@@ -115,12 +117,13 @@ public class EventServiceImpl implements EventService {
 
         Map<Long, ViewStats> viewStats = getStats(List.of(String.format("/events/%d", eventId)));
 
-        int requestsCount = eventRequests.get(event.getId()) != null
-                ? eventRequests.get(event.getId()).intValue() : 0;
-
-        event.setViews(!viewStats.isEmpty() ? viewStats.get(eventId).getHits().intValue() : 0);
         EventFullDto eventFullDto = EventMapper.mapToEventFullDto(event);
-        eventFullDto.setConfirmedRequests(requestsCount);
+
+        int confirmedRequestsCount = eventRequests.getOrDefault(event.getId(), 0L).intValue();
+        int views = viewStats.getOrDefault(event.getId(), new ViewStats()).getHits().intValue();
+
+        eventFullDto.setConfirmedRequests(confirmedRequestsCount);
+        eventFullDto.setViews(views);
 
         return eventFullDto;
     }
@@ -128,16 +131,34 @@ public class EventServiceImpl implements EventService {
     @Override
     @Transactional
     public EventFullDto updateByUserIdAndEventId(UpdateEventUserRequest eventRequestDto, long userId, long eventId) {
-        Event event = eventRepository.findById(eventId)
+        Event event = eventRepository.findByIdAndInitiatorId(eventId, userId)
                 .orElseThrow(() -> new NotFoundException(
-                        String.format("Событие с идентификатором %s не найден", eventId)));
+                        String.format("Событие с идентификатором %s не найдено", eventId)));
+
+        List<Request> confirmedRequests = requestRepository.findAllByEventIdAndStatusEquals(eventId,
+                RequestStatus.CONFIRMED);
+
+        Map<Long, Long> eventRequests = confirmedRequests
+                .stream()
+                .collect(Collectors.groupingBy(request -> request.getEvent().getId(), Collectors.counting()));
 
         if (event.getState().equals(EventState.PUBLISHED)) {
             throw new DataIntegrityViolationException("Изменить можно только отмененные события или события в состоянии ожидания модерации");
         }
 
         Event updatedEvent = eventRepository.save(fillEvent(event, eventRequestDto));
-        return EventMapper.mapToEventFullDto(updatedEvent);
+
+        Map<Long, ViewStats> viewStats = getStats(List.of(String.format("/events/%d", eventId)));
+
+        EventFullDto eventFullDto = EventMapper.mapToEventFullDto(updatedEvent);
+
+        int confirmedRequestsCount = eventRequests.getOrDefault(event.getId(), 0L).intValue();
+        int views = viewStats.getOrDefault(event.getId(), new ViewStats()).getHits().intValue();
+
+        eventFullDto.setConfirmedRequests(confirmedRequestsCount);
+        eventFullDto.setViews(views);
+
+        return eventFullDto;
     }
 
     @Override
@@ -176,7 +197,6 @@ public class EventServiceImpl implements EventService {
                 .orElseThrow(() -> new NotFoundException(
                         String.format("Событие с идентификатором %s не найден", eventId)));
 
-
         List<Request> confirmedRequests = requestRepository.findAllByEventIdAndStatusEquals(eventId, RequestStatus.CONFIRMED);
 
         Map<Long, Long> eventRequests = confirmedRequests
@@ -185,13 +205,13 @@ public class EventServiceImpl implements EventService {
 
         Map<Long, ViewStats> viewStats = getStats(List.of(String.format("/events/%d", eventId)));
 
-        int requestsCount = eventRequests.get(eventId) != null
-                ? eventRequests.get(eventId).intValue() : 0;
-
-
         EventFullDto eventFullDto = EventMapper.mapToEventFullDto(foundEvent);
-        eventFullDto.setConfirmedRequests(requestsCount);
-        eventFullDto.setViews(viewStats.get(eventId) != null ? viewStats.get(eventId).getHits().intValue() : 0);
+
+        int confirmedRequestsCount = eventRequests.getOrDefault(eventId, 0L).intValue();
+        int views = viewStats.getOrDefault(eventId, new ViewStats()).getHits().intValue();
+
+        eventFullDto.setConfirmedRequests(confirmedRequestsCount);
+        eventFullDto.setViews(views);
 
         return eventFullDto;
     }
@@ -205,6 +225,7 @@ public class EventServiceImpl implements EventService {
                                                 LocalDateTime rangeStart,
                                                 LocalDateTime rangeEnd,
                                                 Pageable pageable) {
+
         List<EventState> eventStates = states != null ? states
                 .stream()
                 .map(EventState::valueOf)
@@ -225,15 +246,12 @@ public class EventServiceImpl implements EventService {
         return events
                 .stream()
                 .map(event -> {
-                    int requestsCount = eventRequests.get(event.getId()) != null
-                            ? eventRequests.get(event.getId()).intValue() : 0;
-
-                    int views = viewStats.get(event.getId()) != null
-                            ? viewStats.get(event.getId()).getHits().intValue() : 0;
+                    int confirmedRequestsCount = eventRequests.getOrDefault(event.getId(), 0L).intValue();
+                    int views = viewStats.getOrDefault(event.getId(), new ViewStats()).getHits().intValue();
 
                     EventFullDto eventFullDto = EventMapper.mapToEventFullDto(event);
 
-                    eventFullDto.setConfirmedRequests(requestsCount);
+                    eventFullDto.setConfirmedRequests(confirmedRequestsCount);
                     eventFullDto.setViews(views);
 
                     return eventFullDto;
@@ -253,8 +271,26 @@ public class EventServiceImpl implements EventService {
             throw new DataIntegrityViolationException("Только события со статусом PENDING можно опубликовать или отклонить");
         }
 
+        List<Request> confirmedRequests = requestRepository.findAllByEventIdAndStatusEquals(eventId,
+                RequestStatus.CONFIRMED);
+
+        Map<Long, Long> eventRequests = confirmedRequests
+                .stream()
+                .collect(Collectors.groupingBy(request -> request.getEvent().getId(), Collectors.counting()));
+
         Event updatedEvent = eventRepository.save(fillEvent(event, updateEventAdminRequest));
-        return EventMapper.mapToEventFullDto(updatedEvent);
+
+        Map<Long, ViewStats> viewStats = getStats(List.of(String.format("/events/%d", eventId)));
+
+        EventFullDto eventFullDto = EventMapper.mapToEventFullDto(updatedEvent);
+
+        int confirmedRequestsCount = eventRequests.getOrDefault(event.getId(), 0L).intValue();
+        int views = viewStats.getOrDefault(event.getId(), new ViewStats()).getHits().intValue();
+
+        eventFullDto.setConfirmedRequests(confirmedRequestsCount);
+        eventFullDto.setViews(views);
+
+        return eventFullDto;
     }
 
     private Location getLocation(LocationDto locationDto) {
@@ -263,7 +299,8 @@ public class EventServiceImpl implements EventService {
     }
 
     private Map<Long, ViewStats> getStats(List<String> eventIds) {
-        return statsClient.sendStats(START_DATE, LocalDateTime.now(), eventIds, true)
+        return statsClient.sendStats(START_DATE, LocalDateTime.now().plusDays(1),
+                        eventIds, true)
                 .stream()
                 .collect(Collectors.toMap(stats -> getEventIdFromUri(stats.getUri()), Function.identity()));
     }
@@ -382,21 +419,18 @@ public class EventServiceImpl implements EventService {
                 .stream()
                 .map(event -> {
                     EventShortDto eventShortDto = EventMapper.mapToEventShortDto(event);
-                    int requestsCount = eventRequests.get(event.getId()) != null
-                            ? eventRequests.get(event.getId()).intValue() : 0;
+                    int confirmedRequestsCount = eventRequests.getOrDefault(event.getId(), 0L).intValue();
+                    int views = viewStats.getOrDefault(event.getId(), new ViewStats()).getHits().intValue();
 
-                    int views = viewStats.get(event.getId()) != null
-                            ? viewStats.get(event.getId()).getHits().intValue() : 0;
-
-                    if (event.getParticipantLimit() != 0
-                            && requestsCount <= event.getParticipantLimit()) {
-                        eventShortDto.setConfirmedRequests(requestsCount);
+                    if (event.getParticipantLimit() != 0 && confirmedRequestsCount <= event.getParticipantLimit()) {
+                        eventShortDto.setConfirmedRequests(confirmedRequestsCount);
                         eventShortDto.setViews(views);
 
                         return eventShortDto;
                     }
                     return null;
                 })
+                .filter(Objects::nonNull)
                 .collect(Collectors.toList());
     }
 
@@ -405,14 +439,11 @@ public class EventServiceImpl implements EventService {
         return events
                 .stream()
                 .map(event -> {
+                    int confirmedRequestsCount = eventRequests.getOrDefault(event.getId(), 0L).intValue();
+                    int views = viewStats.getOrDefault(event.getId(), new ViewStats()).getHits().intValue();
+
                     EventShortDto eventShortDto = EventMapper.mapToEventShortDto(event);
-                    int requestsCount = eventRequests.get(event.getId()) != null
-                            ? eventRequests.get(event.getId()).intValue() : 0;
-
-                    int views = viewStats.get(event.getId()) != null
-                            ? viewStats.get(event.getId()).getHits().intValue() : 0;
-
-                    eventShortDto.setConfirmedRequests(requestsCount);
+                    eventShortDto.setConfirmedRequests(confirmedRequestsCount);
                     eventShortDto.setViews(views);
 
                     return eventShortDto;
