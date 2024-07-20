@@ -3,11 +3,11 @@ package ru.practicum.ewm.service.compilation.dto;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 
-import java.util.List;
+import java.util.Set;
 
 @Data
 public class UpdateCompilationRequest {
-    private List<Long> events;
+    private Set<Long> events;
 
     private Boolean pinned;
 

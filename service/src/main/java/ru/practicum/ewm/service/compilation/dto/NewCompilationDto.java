@@ -5,11 +5,11 @@ import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.util.List;
+import java.util.Set;
 
 @Data
 public class NewCompilationDto {
-    private List<Long> events;
+    private Set<Long> events;
 
     private Boolean pinned = false;
 

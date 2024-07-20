@@ -14,7 +14,10 @@ import ru.practicum.ewm.service.event.Event;
 import ru.practicum.ewm.service.event.EventRepository;
 import ru.practicum.ewm.service.exception.NotFoundException;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,18 +32,10 @@ public class CompilationServiceImpl implements CompilationService {
     public CompilationDto create(NewCompilationDto newCompilationDto) {
         Set<Event> compilationEvents = Collections.emptySet();
 
-        List<Long> eventIds = newCompilationDto.getEvents();
+        Set<Long> eventIds = newCompilationDto.getEvents();
 
         if (eventIds != null && !eventIds.isEmpty()) {
-            Map<Long, Event> events = eventRepository.findAllByIdIn(eventIds)
-                    .stream()
-                    .collect(Collectors.toMap(Event::getId, event -> event));
-
-            compilationEvents = eventIds
-                    .stream()
-                    .map(events::get)
-                    .filter(Objects::nonNull)
-                    .collect(Collectors.toSet());
+            compilationEvents = new HashSet<>(eventRepository.findAllByIdIn(eventIds));
 
             if (compilationEvents.size() != eventIds.size()) {
                 throw new DataIntegrityViolationException("Ожидается, что полученные события должны совпадать");
@@ -72,18 +67,10 @@ public class CompilationServiceImpl implements CompilationService {
 
         Set<Event> compilationEvents = foundCompilation.getEvents();
 
-        List<Long> eventIds = updateCompilationRequest.getEvents();
+        Set<Long> eventIds = updateCompilationRequest.getEvents();
 
         if (eventIds != null && !eventIds.isEmpty()) {
-            Map<Long, Event> events = eventRepository.findAllByIdIn(eventIds)
-                    .stream()
-                    .collect(Collectors.toMap(Event::getId, event -> event));
-
-            compilationEvents = eventIds
-                    .stream()
-                    .map(events::get)
-                    .filter(Objects::nonNull)
-                    .collect(Collectors.toSet());
+            compilationEvents = new HashSet<>(eventRepository.findAllByIdIn(eventIds));
 
             if (compilationEvents.size() != eventIds.size()) {
                 throw new DataIntegrityViolationException("Ожидается, что полученные события должны совпадать");

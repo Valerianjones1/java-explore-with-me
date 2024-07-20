@@ -9,11 +9,12 @@ import ru.practicum.ewm.service.event.dto.EventState;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public interface EventRepository extends JpaRepository<Event, Long> {
     List<Event> findAllByInitiatorId(long userId, Pageable pageable);
 
-    List<Event> findAllByIdIn(List<Long> eventIds);
+    List<Event> findAllByIdIn(Set<Long> eventIds);
 
     Optional<Event> findByIdAndInitiatorId(long eventId, long userId);
 
