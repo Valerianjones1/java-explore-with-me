@@ -1,4 +1,4 @@
-package ru.practicum.ewm.dto;
+package ru.practicum.ewm.dto.stats;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,5 +12,5 @@ public class ViewStats {
 
     private String uri;
 
-    private Long hits;
+    private Long hits = 0L;
 }

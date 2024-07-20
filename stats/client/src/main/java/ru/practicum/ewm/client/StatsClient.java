@@ -5,8 +5,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
-import ru.practicum.ewm.dto.EndpointHit;
-import ru.practicum.ewm.dto.ViewStats;
+import ru.practicum.ewm.dto.stats.EndpointHit;
+import ru.practicum.ewm.dto.stats.ViewStats;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -18,8 +18,8 @@ import java.util.List;
 public class StatsClient implements Client {
     private final WebClient webClient;
 
-    public StatsClient(@Value("${stats-service.url}") String statsUrl) {
-        this.webClient = WebClient.create(statsUrl);
+    public StatsClient(@Value("${stats-service.url}") String statsServiceUrl) {
+        this.webClient = WebClient.create(statsServiceUrl);
     }
 
 
