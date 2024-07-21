@@ -5,6 +5,7 @@ import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.format.annotation.DateTimeFormat;
 import ru.practicum.ewm.service.category.dto.CategoryDto;
+import ru.practicum.ewm.service.comment.dto.CommentDto;
 import ru.practicum.ewm.service.location.dto.LocationDto;
 import ru.practicum.ewm.service.user.dto.UserShortDto;
 
@@ -15,6 +16,8 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
 
 @Data
 public class EventFullDto {
@@ -75,4 +78,6 @@ public class EventFullDto {
 
     @PositiveOrZero
     private Integer views;
+
+    private List<CommentDto> comments = Collections.emptyList();
 }

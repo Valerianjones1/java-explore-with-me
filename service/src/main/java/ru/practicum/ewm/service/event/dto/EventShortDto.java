@@ -27,7 +27,7 @@ public class EventShortDto {
     private CategoryDto category;
 
     @PositiveOrZero
-    private Integer confirmedRequests;
+    private Integer confirmedRequests = 0;
 
     @NotNull(message = "Поле 'eventDate' не может быть равно null")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
@@ -46,5 +46,5 @@ public class EventShortDto {
     private String title;
 
     @PositiveOrZero
-    private Integer views;
+    private Integer views = 0;
 }

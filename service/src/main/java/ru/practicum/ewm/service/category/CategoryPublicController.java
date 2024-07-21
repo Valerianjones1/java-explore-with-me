@@ -25,12 +25,14 @@ public class CategoryPublicController {
     public List<CategoryDto> getCategories(@PositiveOrZero @RequestParam(required = false, defaultValue = "0") int from,
                                            @Positive @RequestParam(required = false, defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(from / size, size, Sort.by("id").ascending());
+        log.info("Получаем категории");
         return service.getAll(pageable);
     }
 
     @GetMapping("/{catId}")
     @ResponseStatus(code = HttpStatus.OK)
     public CategoryDto getCategory(@PathVariable long catId) {
+        log.info("Получаем категорию с идентификатором {}", catId);
         return service.get(catId);
     }
 

@@ -1,7 +1,7 @@
 package ru.practicum.ewm.service.exception;
 
-public class DateValidationException extends RuntimeException {
-    public DateValidationException(String message) {
+public class ValidationException extends RuntimeException {
+    public ValidationException(String message) {
         super(message);
     }
 }

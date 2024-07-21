@@ -42,9 +42,10 @@ public class CompilationServiceImpl implements CompilationService {
             }
         }
 
-        Compilation compilation = CompilationMapper.mapToCompilation(newCompilationDto, compilationEvents);
+        Compilation savedCompilation = compilationRepository.save(CompilationMapper.mapToCompilation(newCompilationDto, compilationEvents));
 
-        return CompilationMapper.mapToCompilationDto(compilationRepository.save(compilation));
+        log.info("Подборка событий успешно сохранена {}", savedCompilation);
+        return CompilationMapper.mapToCompilationDto(savedCompilation);
     }
 
     @Override
@@ -55,6 +56,7 @@ public class CompilationServiceImpl implements CompilationService {
                         String.format("Подборка с идентификатором %s не найдена", compId)));
 
         compilationRepository.deleteById(compId);
+        log.info("Подборка событий с идентификатором {} успешно удалена", compId);
     }
 
     @Override
@@ -78,8 +80,10 @@ public class CompilationServiceImpl implements CompilationService {
         }
 
         Compilation newCompilation = CompilationMapper.mapToCompilation(updateCompilationRequest, compilationEvents);
+        Compilation updatedCompilation = compilationRepository.save(fillCompilation(newCompilation, foundCompilation));
 
-        return CompilationMapper.mapToCompilationDto(compilationRepository.save(fillCompilation(newCompilation, foundCompilation)));
+        log.info("Подборка событий успешно обновлена {}", updateCompilationRequest);
+        return CompilationMapper.mapToCompilationDto(updatedCompilation);
     }
 
     @Override
@@ -91,6 +95,7 @@ public class CompilationServiceImpl implements CompilationService {
                     .map(CompilationMapper::mapToCompilationDto)
                     .collect(Collectors.toList());
         }
+        log.info("Подборки событий успешно получены");
         return compilationRepository.findAllByPinned(pinned, pageable)
                 .stream()
                 .map(CompilationMapper::mapToCompilationDto)
@@ -104,6 +109,7 @@ public class CompilationServiceImpl implements CompilationService {
                 .orElseThrow(() -> new NotFoundException(
                         String.format("Подборка с идентификатором %s не найдена", compId)));
 
+        log.info("Подборка событий с идентификатором {} успешно получена", compId);
         return CompilationMapper.mapToCompilationDto(foundCompilation);
     }
 
