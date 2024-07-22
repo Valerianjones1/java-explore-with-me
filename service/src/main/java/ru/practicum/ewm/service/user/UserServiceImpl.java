@@ -26,6 +26,7 @@ public class UserServiceImpl implements UserService {
 
         User savedUser = repository.save(user);
 
+        log.info("Пользователь успешно создан {}", savedUser);
         return UserMapper.mapToUserDto(savedUser);
     }
 
@@ -33,12 +34,14 @@ public class UserServiceImpl implements UserService {
     @Transactional(readOnly = true)
     public List<UserDto> getAll(List<Long> ids, Pageable pageable) {
         if (ids.isEmpty()) {
+            log.info("Пользователи успешно получены {}", ids);
             return repository.findAll(pageable)
                     .stream()
                     .map(UserMapper::mapToUserDto)
                     .collect(Collectors.toList());
         }
 
+        log.info("Пользователи успешно получены {}", ids);
         return repository.findAllByIdIn(ids, pageable)
                 .stream()
                 .map(UserMapper::mapToUserDto)
@@ -53,5 +56,6 @@ public class UserServiceImpl implements UserService {
                         String.format("Пользователь с идентификатором %s не найден", userId)));
 
         repository.deleteById(userId);
+        log.info("Пользователи с идентификатором {} удален", userId);
     }
 }

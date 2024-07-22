@@ -64,6 +64,8 @@ public class RequestServiceImpl implements RequestService {
         }
 
         Request savedRequest = requestRepository.save(RequestMapper.mapToRequest(user, event, status));
+
+        log.info("Заявка успешно сохранена {}", savedRequest);
         return RequestMapper.mapToParticipationRequestDto(savedRequest);
     }
 
@@ -74,6 +76,7 @@ public class RequestServiceImpl implements RequestService {
                 .orElseThrow(() -> new NotFoundException(
                         String.format("Пользователь с идентификатором %s не найден", userId)));
 
+        log.info("Заявки пользователя с идентификатором {} получены", userId);
         return requestRepository.findAllByRequesterId(user.getId())
                 .stream()
                 .map(RequestMapper::mapToParticipationRequestDto)
@@ -92,7 +95,7 @@ public class RequestServiceImpl implements RequestService {
         }
 
         request.setStatus(RequestStatus.CANCELED);
-
+        log.info("Заявка с идентификатором {} отменена {}", requestId, request);
         return RequestMapper.mapToParticipationRequestDto(requestRepository.save(request));
     }
 
@@ -137,13 +140,14 @@ public class RequestServiceImpl implements RequestService {
 
 
         requestRepository.saveAll(requests);
-
+        log.info("Статусы заявок были успешно обновлены {}", requests);
         return EventMapper.mapToEventStatusResult(confirmedRequests, rejectedRequests);
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<ParticipationRequestDto> getRequestsByUserIdAndEventId(long userId, long eventId) {
+        log.info("Заявки получены");
         return requestRepository.findAllByEventInitiatorIdAndEventId(userId, eventId)
                 .stream()
                 .map(RequestMapper::mapToParticipationRequestDto)

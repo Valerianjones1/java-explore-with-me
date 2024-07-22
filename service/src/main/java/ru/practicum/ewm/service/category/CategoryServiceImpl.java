@@ -26,6 +26,7 @@ public class CategoryServiceImpl implements CategoryService {
 
         Category savedCategory = repository.save(category);
 
+        log.info("Категория была успешна сохранена {}", category);
         return CategoryMapper.mapToCategoryDto(savedCategory);
     }
 
@@ -39,9 +40,10 @@ public class CategoryServiceImpl implements CategoryService {
 
         Category newCategory = CategoryMapper.mapToCategory(newCategoryDto);
 
-        Category updatedCategory = fillCategory(newCategory, oldCategory);
+        Category updatedCategory = repository.save(fillCategory(newCategory, oldCategory));
 
-        return CategoryMapper.mapToCategoryDto(repository.save(updatedCategory));
+        log.info("Категория была успешна обновлена {}", updatedCategory);
+        return CategoryMapper.mapToCategoryDto(updatedCategory);
     }
 
     @Override
@@ -50,13 +52,14 @@ public class CategoryServiceImpl implements CategoryService {
         repository.findById(catId)
                 .orElseThrow(() -> new NotFoundException(
                         String.format("Категория с идентификатором %s не найден", catId)));
-
         repository.deleteById(catId);
+        log.info("Категория с идентификатором {} была успешна удалена", catId);
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<CategoryDto> getAll(Pageable pageable) {
+        log.info("Успешно получили категории");
         return repository.findAll(pageable)
                 .stream()
                 .map(CategoryMapper::mapToCategoryDto)
@@ -69,6 +72,7 @@ public class CategoryServiceImpl implements CategoryService {
         Category category = repository.findById(catId)
                 .orElseThrow(() -> new NotFoundException(
                         String.format("Категория с идентификатором %s не найден", catId)));
+        log.info("Получили событие {}", category);
         return CategoryMapper.mapToCategoryDto(category);
     }
 
