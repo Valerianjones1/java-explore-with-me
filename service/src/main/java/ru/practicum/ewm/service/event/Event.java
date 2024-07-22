@@ -2,6 +2,7 @@ package ru.practicum.ewm.service.event;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.annotation.ReadOnlyProperty;
 import ru.practicum.ewm.service.category.Category;
 import ru.practicum.ewm.service.event.dto.EventState;
 import ru.practicum.ewm.service.location.Location;
@@ -17,6 +18,7 @@ import java.time.LocalDateTime;
 public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @ReadOnlyProperty
     private Long id;
 
     @Column

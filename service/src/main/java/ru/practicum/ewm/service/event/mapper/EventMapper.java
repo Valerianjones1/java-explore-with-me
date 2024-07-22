@@ -52,20 +52,6 @@ public class EventMapper {
         return eventShortDto;
     }
 
-    public static EventShortDto mapToEventShortDto(Event event, int confirmedRequests, int views) {
-        EventShortDto eventShortDto = new EventShortDto();
-        eventShortDto.setAnnotation(event.getAnnotation());
-        eventShortDto.setEventDate(event.getEventDate());
-        eventShortDto.setPaid(event.getPaid());
-        eventShortDto.setCategory(CategoryMapper.mapToCategoryDto(event.getCategory()));
-        eventShortDto.setInitiator(UserMapper.mapToUserShortDto(event.getInitiator()));
-        eventShortDto.setTitle(event.getTitle());
-        eventShortDto.setId(event.getId().intValue());
-        eventShortDto.setViews(views);
-        eventShortDto.setConfirmedRequests(confirmedRequests);
-        return eventShortDto;
-    }
-
     public static Event mapToEvent(NewEventDto newEventDto, User initiator, Location location, Category category) {
         Event event = new Event();
         event.setEventDate(newEventDto.getEventDate());

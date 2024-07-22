@@ -12,4 +12,10 @@ public class UpdateCommentDto {
     @NotBlank(message = "Поле 'content' не может быть пустым")
     @Length(min = 1, max = 500)
     private String content;
+
+    private long userId;
+
+    private long eventId;
+
+    private long commentId;
 }

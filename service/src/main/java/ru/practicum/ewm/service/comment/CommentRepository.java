@@ -14,6 +14,6 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     List<Comment> findAllByEventId(long eventId, Pageable pageable);
 
     @Query(value = "SELECT c FROM Comment c " +
-            "WHERE (:categories is null or c.event.category.id in :categories)")
-    List<Comment> findAllByEventCategoryId(@Param("categories") List<Long> categories);
+            "WHERE (:categoryIds is null or c.event.category.id in :categoryIds)")
+    List<Comment> findAllByEventCategoryId(@Param("categoryIds") List<Long> categoryIds);
 }

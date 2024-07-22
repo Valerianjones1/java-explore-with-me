@@ -39,26 +39,14 @@ public class CommentMapper {
         return comment;
     }
 
-    public static CommentDto mapToCommentDto(Comment comment, int views, int confirmedRequests) {
-        CommentDto commentDto = new CommentDto();
-
-        commentDto.setId(comment.getId());
-        commentDto.setContent(comment.getContent());
-        commentDto.setUser(UserMapper.mapToUserShortDto(comment.getUser()));
-        commentDto.setEvent(EventMapper.mapToEventShortDto(comment.getEvent(), confirmedRequests, views));
-        commentDto.setPublishedOn(comment.getPublishedOn());
-
-        return commentDto;
-    }
-
     public static CommentDto mapToCommentDto(Comment comment) {
         CommentDto commentDto = new CommentDto();
 
         commentDto.setId(comment.getId());
         commentDto.setContent(comment.getContent());
         commentDto.setUser(UserMapper.mapToUserShortDto(comment.getUser()));
-        commentDto.setEvent(EventMapper.mapToEventShortDto(comment.getEvent()));
         commentDto.setPublishedOn(comment.getPublishedOn());
+        commentDto.setEvent(EventMapper.mapToEventShortDto(comment.getEvent()));
 
         return commentDto;
     }

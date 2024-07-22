@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewm.service.event.dto.EventFullDto;
 import ru.practicum.ewm.service.event.dto.UpdateEventAdminRequest;
+import ru.practicum.ewm.service.exception.DateValidationException;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
@@ -34,6 +35,10 @@ public class EventAdminController {
                                         @RequestParam(required = false, defaultValue = "0") @PositiveOrZero int from,
                                         @RequestParam(required = false, defaultValue = "10") @Positive int size) {
         log.info("Получаем события с users={}, states={}, categories={}, с {} по {}", users, states, categories, rangeStart, rangeEnd);
+        if ((rangeStart != null && rangeEnd != null) &&
+                (rangeStart.isAfter(rangeEnd) || rangeEnd.isBefore(rangeStart))) {
+            throw new DateValidationException("Ошибка с валидацией данных даты и времени");
+        }
         Pageable pageable = PageRequest.of(from / size, size, Sort.by("id").ascending());
         return service.getEventsByParams(users, states, categories, rangeStart, rangeEnd, pageable);
     }

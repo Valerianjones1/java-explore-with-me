@@ -23,7 +23,9 @@ public class CommentPrivateController {
                                     @PathVariable long userId,
                                     @PathVariable long eventId) {
         log.info("Создаем комментарии {} под событием {}", commentDto, eventId);
-        return service.create(commentDto, userId, eventId);
+        commentDto.setUserId(userId);
+        commentDto.setEventId(eventId);
+        return service.create(commentDto);
     }
 
     @GetMapping("/{userId}/events/{eventId}/comments/{commentId}")
@@ -42,7 +44,10 @@ public class CommentPrivateController {
                                     @PathVariable long eventId,
                                     @PathVariable long commentId) {
         log.info("Обновляем комментарии {} под событием {}", commentDto, eventId);
-        return service.update(commentDto, userId, eventId, commentId);
+        commentDto.setUserId(userId);
+        commentDto.setEventId(eventId);
+        commentDto.setCommentId(commentId);
+        return service.update(commentDto);
     }
 
     @DeleteMapping("/{userId}/events/{eventId}/comments/{commentId}")

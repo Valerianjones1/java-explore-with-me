@@ -8,9 +8,9 @@ import ru.practicum.ewm.service.comment.dto.UpdateCommentDto;
 import java.util.List;
 
 public interface CommentService {
-    CommentDto create(NewCommentDto commentDto, long userId, long eventId);
+    CommentDto create(NewCommentDto commentDto);
 
-    CommentDto update(UpdateCommentDto commentDto, long userId, long eventId, long commentId);
+    CommentDto update(UpdateCommentDto commentDto);
 
     void remove(long userId, long eventId, long commentId);
 

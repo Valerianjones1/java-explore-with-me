@@ -12,4 +12,8 @@ public class NewCommentDto {
     @NotBlank(message = "Поле 'content' не может быть пустым")
     @Length(min = 1, max = 500)
     private String content;
+
+    private long userId;
+
+    private long eventId;
 }

@@ -48,6 +48,7 @@ public class EventServiceImpl implements EventService {
     private final Client statsClient;
 
     private static final LocalDateTime START_DATE = LocalDateTime.of(2000, 1, 1, 1, 1);
+    private static final LocalDateTime END_DATE = LocalDateTime.now().plusDays(1);
 
     @Override
     @Transactional
@@ -228,7 +229,7 @@ public class EventServiceImpl implements EventService {
     @Transactional(readOnly = true)
     public List<EventFullDto> getEventsByParams(List<Long> users,
                                                 List<String> states,
-                                                List<Long> categories,
+                                                List<Long> categoryIds,
                                                 LocalDateTime rangeStart,
                                                 LocalDateTime rangeEnd,
                                                 Pageable pageable) {
@@ -237,7 +238,7 @@ public class EventServiceImpl implements EventService {
                 .map(EventState::valueOf)
                 .collect(Collectors.toList()) : null;
 
-        List<Event> events = eventRepository.findAllByCategoryIdsAndUserIds(categories, users, eventStates, rangeStart, rangeEnd, pageable);
+        List<Event> events = eventRepository.findAllByCategoryIdsAndUserIds(categoryIds, users, eventStates, rangeStart, rangeEnd, pageable);
 
         Map<Long, Long> eventRequests = getConfirmedRequests();
 
@@ -245,15 +246,9 @@ public class EventServiceImpl implements EventService {
                 .map(event -> "/events/" + event.getId())
                 .collect(Collectors.toList()));
 
-        List<CommentDto> comments = commentRepository.findAllByEventCategoryId(categories)
+        List<CommentDto> comments = commentRepository.findAllByEventCategoryId(categoryIds)
                 .stream()
-                .map(comment -> {
-                    long eventId = comment.getEvent().getId();
-                    int views = viewStats.getOrDefault(eventId, new ViewStats()).getHits().intValue();
-                    int confirmedRequests = eventRequests.getOrDefault(eventId, 0L).intValue();
-
-                    return CommentMapper.mapToCommentDto(comment, views, confirmedRequests);
-                })
+                .map(CommentMapper::mapToCommentDto)
                 .collect(Collectors.toList());
 
         Map<Long, List<CommentDto>> eventComments = comments
@@ -321,8 +316,7 @@ public class EventServiceImpl implements EventService {
     }
 
     private Map<Long, ViewStats> getStats(List<String> eventIds) {
-        return statsClient.sendStats(START_DATE, LocalDateTime.now().plusDays(1),
-                        eventIds, true)
+        return statsClient.sendStats(START_DATE, END_DATE, eventIds, true)
                 .stream()
                 .collect(Collectors.toMap(stats -> getEventIdFromUri(stats.getUri()), Function.identity()));
     }

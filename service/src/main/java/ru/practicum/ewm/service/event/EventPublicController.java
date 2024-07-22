@@ -12,7 +12,7 @@ import ru.practicum.ewm.client.Client;
 import ru.practicum.ewm.dto.stats.EndpointHit;
 import ru.practicum.ewm.service.event.dto.EventFullDto;
 import ru.practicum.ewm.service.event.dto.EventShortDto;
-import ru.practicum.ewm.service.exception.ValidationException;
+import ru.practicum.ewm.service.exception.DateValidationException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.Positive;
@@ -47,7 +47,7 @@ public class EventPublicController {
         log.info("Ищем события text={}", text);
         if ((rangeStart != null && rangeEnd != null) &&
                 (rangeStart.isAfter(rangeEnd) || rangeEnd.isBefore(rangeStart))) {
-            throw new ValidationException("Ошибка с валидацией данных даты и времени");
+            throw new DateValidationException("Ошибка с валидацией данных даты и времени");
         }
         Pageable pageable = PageRequest.of(from / size, size, Sort.by(getSort(sort)).ascending());
 

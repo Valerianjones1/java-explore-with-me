@@ -11,9 +11,10 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import ru.practicum.ewm.service.exception.DateValidationException;
 import ru.practicum.ewm.service.exception.EventNotPublishedException;
 import ru.practicum.ewm.service.exception.NotFoundException;
-import ru.practicum.ewm.service.exception.ValidationException;
+import ru.practicum.ewm.service.exception.NotRightUserOrEventException;
 
 import java.time.LocalDateTime;
 
@@ -30,10 +31,17 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-
     public ApiError handleMissingPathVar(final MethodArgumentTypeMismatchException e) {
         log.error("Ошибка с параметрами", e);
         return new ApiError(e.getMessage(), "Ошибка с параметрами",
+                HttpStatus.BAD_REQUEST.getReasonPhrase(), LocalDateTime.now());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiError handleDateValidation(final DateValidationException e) {
+        log.error("Ошибка с параметрами даты и времени", e);
+        return new ApiError(e.getMessage(), "Ошибка с параметрами даты и времени",
                 HttpStatus.BAD_REQUEST.getReasonPhrase(), LocalDateTime.now());
     }
 
@@ -46,8 +54,8 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiError handleValidParams(final ValidationException e) {
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ApiError handleNotRightUserOrEvent(final NotRightUserOrEventException e) {
         log.error("Ошибка с параметрами", e);
         return new ApiError(e.getMessage(), "Ошибка с параметрами",
                 HttpStatus.BAD_REQUEST.getReasonPhrase(), LocalDateTime.now());
